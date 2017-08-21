@@ -4,12 +4,11 @@ package overseer
 import (
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"runtime"
 	"time"
-
-	"github.com/jpillora/overseer/fetcher"
 )
 
 const (
@@ -56,7 +55,10 @@ type Config struct {
 	//Though manual restarts using the RestartSignal can still be performed.
 	NoRestartAfterFetch bool
 	//Fetcher will be used to fetch binaries.
-	Fetcher fetcher.Interface
+	Fetcher interface {
+		Init() error
+		Fetch() (io.Reader, error)
+	}
 }
 
 func validate(c *Config) error {
